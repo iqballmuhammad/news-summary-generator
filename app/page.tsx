@@ -10,7 +10,7 @@ import { useState } from 'react';
 
 function SkeletonDemo() {
   return (
-    <div className='flex items-center space-x-4'>
+    <div className='flex flex-col items-center space-x-4'>
       <Skeleton className='h-4 w-[250px]' />
       <Skeleton className='h-4 w-[250px]' />
       <Skeleton className='h-4 w-[250px]' />
