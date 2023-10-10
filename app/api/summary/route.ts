@@ -1,7 +1,6 @@
-// ./app/api/chat/route.ts
 import OpenAI from 'openai';
 import { generatePrompt } from '@/lib/utils';
-import { NextResponse } from 'next/server';
+import { OpenAIStream, StreamingTextResponse } from 'ai';
 
 // Create an OpenAI API client (that's edge friendly!)
 const openai = new OpenAI({
@@ -13,17 +12,18 @@ export const runtime = 'edge';
 
 export async function POST(req: Request) {
   // Extract the `prompt` from the body of the request
-  const { message } = await req.json();
-  const passedMessages = generatePrompt(message);
-
+  const { messages } = await req.json();
+  const passedMessages = generatePrompt(messages);
   // Ask OpenAI for a streaming chat completion given the prompt
   const response = await openai.chat.completions.create({
     model: 'gpt-4',
-    stream: false,
+    stream: true,
     messages: passedMessages,
   });
 
-  const data = response.choices[0]?.message?.content;
-  console.log(data);
-  return NextResponse.json(data);
+   // Convert the response into a friendly text-stream
+   const stream = OpenAIStream(response);
+  
+   // Respond with the stream
+   return new StreamingTextResponse(stream);
 }
