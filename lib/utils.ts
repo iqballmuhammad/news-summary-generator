@@ -8,14 +8,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function generatePrompt(input: string): ChatCompletionMessageParam[] {
-  const urls = input.split(',');
-  const urlList =
-    urls.length === 0
-      ? ''
-      : urls.map((url) => {
-          return `${url.trim()}`;
-        });
-  const content = DEFAULT_PROMPT.replace('{{url}}', urlList[0]);
+  const content = DEFAULT_PROMPT.replace('{{url}}', input);
   return [
     {
       content,

@@ -1,1 +1,1 @@
-export const DEFAULT_PROMPT = `Generate a brief and concise summary from this article: {{url}}. Citate the media source and linked it with the news URL.`;
+export const DEFAULT_PROMPT = `Generate a 150-200 words summary for each of these article: {{url}}. The urls are delimited by comma. Citate or mention the source, use the media source name as text and linked it with the news URL. Separate the summary from different URL with bullet points`;

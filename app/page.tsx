@@ -11,9 +11,10 @@ import { useState } from 'react';
 function SkeletonDemo() {
   return (
     <div className='flex flex-col items-center space-y-2'>
-      <Skeleton className='h-4 w-[250px]' />
-      <Skeleton className='h-4 w-[225px]' />
-      <Skeleton className='h-4 w-[200px]' />
+      <Skeleton className='h-4 w-[275px]' />
+      <Skeleton className='h-4 w-[275px]' />
+      <Skeleton className='h-4 w-[275px]' />
+      <Skeleton className='h-4 w-[275px]' />
     </div>
   );
 }
@@ -22,7 +23,7 @@ function TextAreaDemo(props: { content: string }) {
   const [textAreaValue, SetTextAreaValue] = useState(props.content);
   return (
     <div className='grid w-full gap-3'>
-      <Label htmlFor='summary'>Article summary</Label>
+      <Label htmlFor='summary'>Article(s) summary</Label>
       <Textarea
         className='h-52 p-2'
         value={textAreaValue}
@@ -81,21 +82,28 @@ export default function Chat() {
   }
 
   return (
-    <div className='flex justify-center flex-col w-full h-screen max-w-md py-24 mx-auto stretch'>
+    <div className='flex justify-center flex-col w-full h-screen max-w-md py-24 mx-auto stretch p-10'>
       {result && <TextAreaDemo content={result} />}
       {status === 'loading' && <SkeletonDemo />}
       {status === 'typing' && (
-        <form className='w-full flex flex-col justify-center' onSubmit={handleSubmit}>
-          <Input
-            className='w-full max-w-md p-2 mb-8 rounded shadow-md flex'
-            placeholder='Input news article URL...'
-            id='url'
-            name='url'
-            onChange={(e) => setInput(e.target.value)}
-            required
-          />
-          <Button>Generate Summary</Button>
-        </form>
+        <div>
+          <div className='text-5xl text-center mb-20'>News Summary Generator</div>
+          <form
+            className='w-full flex flex-col justify-center space-y-3'
+            onSubmit={handleSubmit}
+          >
+            <Input
+              className='w-full max-w-md p-2 rounded shadow-md flex'
+              placeholder='Enter URL(s) separated by commas'
+              id='url'
+              name='url'
+              onChange={(e) => setInput(e.target.value)}
+              required
+            />
+
+            <Button>Generate Summary</Button>
+          </form>
+        </div>
       )}
     </div>
   );
