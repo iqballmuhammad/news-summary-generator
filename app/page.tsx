@@ -5,7 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
-import { Copy } from 'lucide-react';
+import { ArrowLeftCircle, Copy } from 'lucide-react';
 import { useState } from 'react';
 
 function SkeletonDemo() {
@@ -19,7 +19,7 @@ function SkeletonDemo() {
   );
 }
 
-function TextAreaDemo(props: { content: string }) {
+function TextAreaDemo(props: { content: string; handleBack: Function }) {
   const [textAreaValue, SetTextAreaValue] = useState(props.content);
   return (
     <div className='grid w-full gap-3'>
@@ -31,7 +31,12 @@ function TextAreaDemo(props: { content: string }) {
         onChange={(e) => SetTextAreaValue(e.target.value)}
         id='summary'
       />
-      <CopyButton text={textAreaValue} />
+      <div className='flex justify-center space-x-2'>
+        <Button variant='outline' className='p-2 flex-1' onClick={() => props.handleBack()}>
+        <ArrowLeftCircle className='mr-2 h-4 w-4' />Back
+        </Button>
+        <CopyButton text={textAreaValue} />
+      </div>
     </div>
   );
 }
@@ -40,6 +45,7 @@ function CopyButton(props: { text: string }) {
   const { toast } = useToast();
   return (
     <Button
+      className='p-2 flex-1'
       onClick={() => {
         navigator.clipboard.writeText(props.text);
         toast({
@@ -47,7 +53,7 @@ function CopyButton(props: { text: string }) {
         });
       }}
     >
-      <Copy className='mr-2 h-4 w-4' /> Copy To Clipboard
+      <Copy className='mr-2 h-4 w-4' /> Copy
     </Button>
   );
 }
@@ -83,18 +89,22 @@ export default function Chat() {
 
   return (
     <div className='flex justify-center flex-col w-full h-screen max-w-md py-24 mx-auto stretch p-10'>
-      {result && <TextAreaDemo content={result} />}
+      {result && status === 'finished' && (
+        <TextAreaDemo content={result} handleBack={() => setStatus('typing')} />
+      )}
       {status === 'loading' && <SkeletonDemo />}
       {status === 'typing' && (
         <div>
-          <div className='text-5xl text-center mb-20'>News Summary Generator</div>
+          <div className='text-5xl text-center mb-20'>
+            News Summary Generator
+          </div>
           <form
             className='w-full flex flex-col justify-center space-y-3'
             onSubmit={handleSubmit}
           >
-            <Input
+            <Textarea
               className='w-full max-w-md p-2 rounded shadow-md flex'
-              placeholder='Enter URL(s) separated by commas'
+              placeholder='Enter URL(s) separated by commas (e.g. http://example1.com, http://example2.com)'
               id='url'
               name='url'
               onChange={(e) => setInput(e.target.value)}
