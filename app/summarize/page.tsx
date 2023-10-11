@@ -38,7 +38,11 @@ function TextAreaDemo(props: {
       <Label htmlFor='summary'>Article(s) summary</Label>
       <Textarea
         className='h-52 p-2'
-        value={!props.isUpload ? getAIMessage(props.content as Message[]) : props.content as string}
+        value={
+          !props.isUpload
+            ? getAIMessage(props.content as Message[])
+            : (props.content as string)
+        }
         placeholder='Type your message here.'
         // onChange={(e) => SetTextAreaValue(e.target.value)}
         id='summary'
@@ -100,17 +104,20 @@ export default function Chat() {
       const reader = res.body?.getReader();
       const decoder = new TextDecoder('utf-8');
       let text = '';
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) {
-          break;
+      if (reader) {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) {
+            break;
+          }
+          // Massage and parse the chunk of data
+          const chunk = decoder.decode(value);
+          const lines = chunk.split('\\n');
+          text = text + lines;
+          setUploadMessages(text);
         }
-        // Massage and parse the chunk of data
-        const chunk = decoder.decode(value);
-        const lines = chunk.split('\\n');
-        text = text + lines;
-        setUploadMessages(text);
       }
+
       // handle the error
       if (!res.ok) throw new Error(await res.text());
     } catch (e: any) {
