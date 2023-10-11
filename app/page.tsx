@@ -7,6 +7,10 @@ import { useToast } from '@/components/ui/use-toast';
 import { ArrowLeftCircle, Copy } from 'lucide-react';
 import { useState } from 'react';
 import { Message, useChat } from 'ai/react';
+import { Input } from '@/components/ui/input';
+import { NextResponse } from 'next/server';
+import OpenAI from 'openai';
+import Link from 'next/link';
 
 function SkeletonDemo() {
   return (
@@ -70,16 +74,48 @@ function CopyButton(props: { text: string }) {
 
 export default function Chat() {
   const [status, setStatus] = useState('typing');
-
+  const [file, setFile] = useState<File>();
+  const [uploadMessages, setUploadMessages] = useState<Message[]>();
   const { messages, input, handleInputChange, handleSubmit } = useChat({
-    api: '/api/summary'
+    api: '/api/summary-stream'
   });
+
+  async function handleUpload(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (!file) return;
+    try {
+      setStatus('loading');
+      const data = new FormData();
+      data.set('csv', file);
+      const res = await fetch('/api/summary-upload', {
+        method: 'POST',
+        body: data
+      });
+      const uploadMessages = await res.json();
+      setUploadMessages([uploadMessages[0].message] as unknown as Message[]);
+      setStatus('finished-upload');
+      console.log(uploadMessages[0].message);
+      // handle the error
+      if (!res.ok) throw new Error(await res.text());
+    } catch (e: any) {
+      // Handle errors here
+      console.error(e);
+      setStatus('finished-upload');
+    }
+  }
 
   return (
     <div className='flex justify-center flex-col w-full h-screen max-w-md py-24 mx-auto stretch p-10'>
       {messages && status === 'finished' && (
         <TextAreaDemo
           content={messages}
+          handleBack={() => window.location.reload()}
+        />
+      )}
+
+      {uploadMessages && status === 'finished-upload' && (
+        <TextAreaDemo
+          content={uploadMessages}
           handleBack={() => window.location.reload()}
         />
       )}
@@ -107,6 +143,21 @@ export default function Chat() {
             />
 
             <Button type='submit'>Generate Summary</Button>
+          </form>
+          <div className='mt-10 mb-10 text-center'>OR</div>
+          <form className='flex flex-col space-y-2' onSubmit={handleUpload}>
+            <Input
+              className='grid w-full max-w-sm items-center gap-1.5 justify-center text-center cursor-pointer'
+              id='csv'
+              type='file'
+              onChange={(e) => setFile(e.target.files?.[0])}
+            />
+            <Link className='text-xs text-center text-sky-500 underline' href='https://cdnid.sp-cdn.susercontent.com/api/v4/50093511/slimud/cf0e7356c2751970e5f44b78722c7c40/example.csv'>
+              CSV File Example
+            </Link>
+            <Button className='cursor-pointer' type='submit'>
+              Upload CSV
+            </Button>
           </form>
         </div>
       )}
