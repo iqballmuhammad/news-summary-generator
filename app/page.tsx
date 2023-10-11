@@ -19,10 +19,9 @@ function SkeletonDemo() {
   );
 }
 
-
-function getAIMessage(messages: Message[]): string{
+function getAIMessage(messages: Message[]): string {
   const message = messages.filter((message) => message.role === 'assistant');
-  return message[0]?.content
+  return message[0]?.content;
 }
 
 function TextAreaDemo(props: { content: Message[]; handleBack: Function }) {
@@ -75,13 +74,13 @@ export default function Chat() {
   const { messages, input, handleInputChange, handleSubmit } = useChat({
     api: '/api/summary'
   });
-  
+
   return (
     <div className='flex justify-center flex-col w-full h-screen max-w-md py-24 mx-auto stretch p-10'>
       {messages && status === 'finished' && (
         <TextAreaDemo
           content={messages}
-          handleBack={() => setStatus('typing')}
+          handleBack={() => window.location.reload()}
         />
       )}
       {status === 'loading' && <SkeletonDemo />}
