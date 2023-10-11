@@ -5,7 +5,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
 import { ArrowLeftCircle, Copy } from 'lucide-react';
-import { useState } from 'react';
+import { lazy, useState } from 'react';
 import { Message, useChat } from 'ai/react';
 import { Input } from '@/components/ui/input';
 
@@ -26,16 +26,21 @@ function getAIMessage(messages: Message[]): string {
   return message[0]?.content;
 }
 
-function TextAreaDemo(props: { content: Message[]; handleBack: Function }) {
+function TextAreaDemo(props: {
+  content: Message[] | string;
+  isUpload: boolean;
+  handleBack: Function;
+}) {
   const [textAreaValue, SetTextAreaValue] = useState('');
+  console.log(props.content);
   return (
     <div className='grid w-full gap-3'>
       <Label htmlFor='summary'>Article(s) summary</Label>
       <Textarea
         className='h-52 p-2'
-        defaultValue={getAIMessage(props.content)}
+        value={!props.isUpload ? getAIMessage(props.content as Message[]) : props.content as string}
         placeholder='Type your message here.'
-        onChange={(e) => SetTextAreaValue(e.target.value)}
+        // onChange={(e) => SetTextAreaValue(e.target.value)}
         id='summary'
       />
       <div className='flex justify-center space-x-2'>
@@ -73,7 +78,7 @@ function CopyButton(props: { text: string }) {
 export default function Chat() {
   const [status, setStatus] = useState('typing');
   const [file, setFile] = useState<File>();
-  const [uploadMessages, setUploadMessages] = useState<Message[]>();
+  const [uploadMessages, setUploadMessages] = useState('');
   const { messages, input, handleInputChange, handleSubmit } = useChat({
     api: '/api/summary-stream'
   });
@@ -89,10 +94,23 @@ export default function Chat() {
         method: 'POST',
         body: data
       });
-      const uploadMessages = await res.json();
-      setUploadMessages([uploadMessages[0].message] as unknown as Message[]);
       setStatus('finished-upload');
-      console.log(uploadMessages[0].message);
+
+      // Read the response as a stream of data
+      const reader = res.body?.getReader();
+      const decoder = new TextDecoder('utf-8');
+      let text = '';
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) {
+          break;
+        }
+        // Massage and parse the chunk of data
+        const chunk = decoder.decode(value);
+        const lines = chunk.split('\\n');
+        text = text + lines;
+        setUploadMessages(text);
+      }
       // handle the error
       if (!res.ok) throw new Error(await res.text());
     } catch (e: any) {
@@ -101,12 +119,12 @@ export default function Chat() {
       setStatus('finished-upload');
     }
   }
-
   return (
     <div className='flex justify-center flex-col w-full h-screen max-w-md py-24 mx-auto stretch p-10'>
       {messages && status === 'finished' && (
         <TextAreaDemo
           content={messages}
+          isUpload={false}
           handleBack={() => window.location.reload()}
         />
       )}
@@ -114,6 +132,7 @@ export default function Chat() {
       {uploadMessages && status === 'finished-upload' && (
         <TextAreaDemo
           content={uploadMessages}
+          isUpload={true}
           handleBack={() => window.location.reload()}
         />
       )}
@@ -154,7 +173,7 @@ export default function Chat() {
               target='_blank'
               className='text-xs text-center text-sky-500 underline'
               href='https://cdnid.sp-cdn.susercontent.com/api/v4/50093511/slimud/cf0e7356c2751970e5f44b78722c7c40/example.csv'
-              rel="noopener noreferrer"
+              rel='noopener noreferrer'
             >
               CSV File Example
             </a>
