@@ -8,7 +8,6 @@ import { ArrowLeftCircle, Copy } from 'lucide-react';
 import { useState } from 'react';
 import { Message, useChat } from 'ai/react';
 import { Input } from '@/components/ui/input';
-import Link from 'next/link';
 
 function SkeletonDemo() {
   return (
