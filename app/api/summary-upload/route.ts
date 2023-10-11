@@ -9,6 +9,9 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY || ''
 });
 
+// IMPORTANT! Set the runtime to edge
+export const runtime = 'edge';
+
 export async function POST(request: NextRequest) {
   const data = await request.formData();
   const file: File | null = data.get('csv') as unknown as File;
