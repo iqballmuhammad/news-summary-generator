@@ -44,7 +44,7 @@ function TextAreaDemo(props: {
             : (props.content as string)
         }
         placeholder='Type your message here.'
-        // onChange={(e) => SetTextAreaValue(e.target.value)}
+        onChange={(e) => !props.isUpload && SetTextAreaValue(e.target.value)}
         id='summary'
       />
       <div className='flex justify-center space-x-2'>
@@ -56,7 +56,7 @@ function TextAreaDemo(props: {
           <ArrowLeftCircle className='mr-2 h-4 w-4' />
           Back
         </Button>
-        <CopyButton text={textAreaValue} />
+        <CopyButton text={props.isUpload ? props.content as string : textAreaValue} />
       </div>
     </div>
   );
