@@ -27,7 +27,7 @@ async function getSummaryFromCsv(csv: string[][]) {
   const passedMessages = generateBulkPrompt(messages);
   // Ask OpenAI for a streaming chat completion given the prompt
   const chatCompletion = await openai.chat.completions.create({
-    model: 'gpt-3.5-turbo',
+    model: 'gpt-4',
     messages: passedMessages
   });
   return chatCompletion.choices;

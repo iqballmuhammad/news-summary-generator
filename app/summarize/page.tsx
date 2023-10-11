@@ -19,6 +19,7 @@ function SkeletonDemo() {
       <Skeleton className='h-4 w-[275px]' />
       <Skeleton className='h-4 w-[275px]' />
       <Skeleton className='h-4 w-[275px]' />
+      Processing...
     </div>
   );
 }
