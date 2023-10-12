@@ -3,6 +3,7 @@ import { twMerge } from 'tailwind-merge';
 import { ChatCompletionMessageParam } from 'openai/resources/chat';
 import { BULK_PROMPT, DEFAULT_PROMPT } from './constant';
 import { Message } from 'ai';
+import { SummaryMessageRequest } from '@/lib/types';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -26,4 +27,25 @@ export function generateBulkPrompt(messages: SummaryMessageRequest[]): ChatCompl
       role: 'user'
     }
   ];
+}
+
+export function getAIMessage(messages: Message[]): string {
+  const message = messages.filter((message) => message.role === 'assistant');
+  return message[0]?.content;
+}
+
+
+export function transformCsv(csv: string[][]) {
+  const data: SummaryMessageRequest[] = [];
+  for (let i = 1; i < csv.length; i++) {
+    const row = csv[i];
+    const inputRow: SummaryMessageRequest = {
+      category: row[0],
+      sourceName: row[1],
+      sourceUrl: row[2],
+      content: row[3]
+    };
+    data.push(inputRow);
+  }
+  return data;
 }
