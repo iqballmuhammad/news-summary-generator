@@ -28,6 +28,7 @@ export default function RootLayout({
         type='application/ld+json'
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
+      <meta name="google-site-verification" content="4oo334kItDzId8vCWKm-uaXzjob25rWUuDaRTA3dWkM" />
       <body className={inter.className}>
         <div className='flex justify-center flex-col w-full h-screen max-w-md py-24 mx-auto stretch p-10'>
           {children}
