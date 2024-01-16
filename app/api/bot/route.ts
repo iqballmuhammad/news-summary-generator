@@ -21,6 +21,7 @@ export async function POST(req: Request) {
         return NextResponse.json({ data: 'success' });
 
       case SEATALK_EVENT.MESSAGE_RECEIVED:
+        console.log(event.message);
         await sendMessageCard(event.employee_code, appToken);
         console.log('done send message');
         return NextResponse.json({ data: 'success' });
