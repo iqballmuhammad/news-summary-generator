@@ -40,16 +40,17 @@ export async function POST(req: Request) {
 
 async function sendMessageCard(employeeCode: string, appToken: string) {
   console.log('posting message');
-  await fetch(SEATALK_API.SEND_SERVICE_NOTICE, {
+  await fetch(SEATALK_API.SEND_SINGLE_CHAT, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${appToken}`,
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      tag: 'interactive_message',
-      interactive_message: {
-        default: {
+      employee_code: employeeCode,
+      message: {
+        tag: 'interactive_message',
+        interactive_message: {
           elements: [
             {
               element_type: 'title',
@@ -68,7 +69,7 @@ async function sendMessageCard(employeeCode: string, appToken: string) {
               button: {
                 button_type: 'callback',
                 text: 'Not yet',
-                value: 'pun'
+                value: 'test'
               }
             },
             {
@@ -76,13 +77,12 @@ async function sendMessageCard(employeeCode: string, appToken: string) {
               button: {
                 button_type: 'callback',
                 text: 'Yes, but try to make me laugh anyway',
-                value: 'pun'
+                value: 'test'
               }
             }
           ]
         }
-      },
-      employee_codes: [employeeCode]
+      }
     })
   });
 }
