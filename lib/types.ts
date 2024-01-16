@@ -35,9 +35,24 @@ export interface FormUploadProps {
   setFile: (value: SetStateAction<File | undefined>) => void;
 }
 
-export interface ISeatalkRequestBody {
+export enum SEATALK_EVENT {
+  MESSAGE_RECEIVED = 'message_from_bot_subscriber',
+  VERIFICATION = 'event_verification'
+}
+
+export enum SEATALK_API {
+  APP_ACCESS_TOKEN = 'https://openapi.seatalk.io/auth/app_access_token'
+}
+
+export interface GetAccessTokenResponseBody {
+  code: number;
+  app_access_token: string;
+  expire: number;
+}
+
+export interface VerificationRequestbody {
   event_id: string;
-  event_type: 'event_verification';
+  event_type: SEATALK_EVENT;
   timestamp: number;
   app_id: string;
   event: {

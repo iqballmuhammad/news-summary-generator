@@ -5,4 +5,7 @@ Generate a brief and concise summary from the following data:
 {{data}}
 
 This data is an array of message request. Generate summary in paragraph forms for each entries from "content". Categorize the summary from entry's category, and group each entry with same category within the same section separated by bullet points. Citate media source name and linked it with the source url within each paragraph.
-`
+`;
+
+export const SEATALK_APP_ID = 'Nzc4OTAxMTUyNzAy';
+export const SEATALK_APP_SECRET = 'SOTsLdSG_4jt-myCHoBkGXpUmQUwuC-B';
