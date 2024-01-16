@@ -37,11 +37,14 @@ export interface FormUploadProps {
 
 export enum SEATALK_EVENT {
   MESSAGE_RECEIVED = 'message_from_bot_subscriber',
-  VERIFICATION = 'event_verification'
+  VERIFICATION = 'event_verification',
+  INTERACTIVE_MESSAGE_CLICK = 'interactive_message_click'
 }
 
 export enum SEATALK_API {
-  APP_ACCESS_TOKEN = 'https://openapi.seatalk.io/auth/app_access_token'
+  APP_ACCESS_TOKEN = 'https://openapi.seatalk.io/auth/app_access_token',
+  SEND_SINGLE_CHAT = 'https://openapi.seatalk.io/messaging/v2/single_chat',
+  SEND_SERVICE_NOTICE = 'https://openapi.seatalk.io/messaging/v2/service_notice/send_message'
 }
 
 export interface GetAccessTokenResponseBody {
@@ -50,12 +53,81 @@ export interface GetAccessTokenResponseBody {
   expire: number;
 }
 
-export interface VerificationRequestbody {
+export interface InteractiveMessageResponseBody {
   event_id: string;
-  event_type: SEATALK_EVENT;
+  event_type: SEATALK_EVENT.INTERACTIVE_MESSAGE_CLICK;
+  timestamp: number;
+  app_id: number;
+  event: {
+    message_id: string;
+    employee_code: string;
+    value: string;
+    seatalk_id: string;
+  };
+}
+
+export interface VerificationResponseBody {
+  event_id: string;
+  event_type: SEATALK_EVENT.VERIFICATION;
   timestamp: number;
   app_id: string;
   event: {
     seatalk_challenge: string;
+  };
+}
+
+export type RESPONSE_TYPE =
+  | MessageReceivedResponseBody
+  | VerificationResponseBody
+  | InteractiveMessageResponseBody;
+
+export interface MessageReceivedResponseBody {
+  event_id: string;
+  event_type: SEATALK_EVENT.MESSAGE_RECEIVED;
+  timestamp: number;
+  app_id: string;
+  event: {
+    employee_code: string;
+    message: {
+      tag: string;
+      text: {
+        content: string;
+      };
+    };
+  };
+}
+
+export interface SingleChatRequestBody {
+  employee_code: string;
+  message: {
+    tag: 'image';
+    image: {
+      content: string;
+    };
+  };
+}
+
+export interface InteractiveMessageRequestBody {
+  employee_code: string;
+  message: {
+    tag: 'interactive_message';
+    interactive_message: {
+      elements: InteractiveMessage[];
+    };
+  };
+}
+
+interface InteractiveMessage {
+  element_type: 'title' | 'description' | 'button';
+  title?: {
+    text: string;
+  };
+  description?: {
+    text: string;
+  };
+  button?: {
+    button_type: 'callback';
+    text: string;
+    value: 'pun';
   };
 }
