@@ -12,14 +12,17 @@ export async function POST(req: Request) {
   const res = (await req.json()) as RESPONSE_TYPE;
   const { event_type, event } = res;
   const appToken = await getAppAccessToken();
+  console.log(appToken);
   if (event_type) {
     switch (event_type) {
       case SEATALK_EVENT.INTERACTIVE_MESSAGE_CLICK:
         await sendRandomPunImage(event.employee_code, appToken);
+        console.log('done send image');
         return NextResponse.json({ data: 'success' });
 
       case SEATALK_EVENT.MESSAGE_RECEIVED:
         await sendMessageCard(event.employee_code, appToken);
+        console.log('done send message');
         return NextResponse.json({ data: 'success' });
 
       case SEATALK_EVENT.VERIFICATION:
@@ -35,6 +38,7 @@ export async function POST(req: Request) {
 }
 
 async function sendMessageCard(employeeCode: string, appToken: string) {
+  console.log('posting message');
   await fetch(SEATALK_API.SEND_SERVICE_NOTICE, {
     method: 'POST',
     headers: {
@@ -83,6 +87,7 @@ async function sendMessageCard(employeeCode: string, appToken: string) {
 }
 
 async function sendRandomPunImage(employeeCode: string, appToken: string) {
+  console.log('posting image');
   const image = getImage();
   await fetch(SEATALK_API.SEND_SERVICE_NOTICE, {
     method: 'POST',
