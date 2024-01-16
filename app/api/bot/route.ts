@@ -1,7 +1,6 @@
 import { SEATALK_APP_ID, SEATALK_APP_SECRET } from '@/lib/constant';
 import { getImage } from '@/lib/getImage';
 import {
-  VerificationResponseBody,
   SEATALK_EVENT,
   RESPONSE_TYPE,
   GetAccessTokenResponseBody,
@@ -113,7 +112,6 @@ async function getAppAccessToken() {
       app_id: SEATALK_APP_ID,
       app_secret: SEATALK_APP_SECRET
     }),
-    cache: 'force-cache',
     next: {
       revalidate: 3600
     }
