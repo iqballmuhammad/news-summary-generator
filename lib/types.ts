@@ -2,11 +2,11 @@ import { FormEvent, SetStateAction } from 'react';
 
 import { ChatRequestOptions } from 'ai';
 
-export interface SummaryMessageRequest{
-    category: string;
-    sourceName: string;
-    sourceUrl: string;
-    content: string;
+export interface SummaryMessageRequest {
+  category: string;
+  sourceName: string;
+  sourceUrl: string;
+  content: string;
 }
 
 export type PageStatus =
@@ -33,4 +33,14 @@ export interface FormUrlProps {
 export interface FormUploadProps {
   handleUpload: (e: React.FormEvent<HTMLFormElement>) => void;
   setFile: (value: SetStateAction<File | undefined>) => void;
+}
+
+export interface ISeatalkRequestBody {
+  event_id: string;
+  event_type: 'event_verification';
+  timestamp: number;
+  app_id: string;
+  event: {
+    seatalk_challenge: string;
+  };
 }
