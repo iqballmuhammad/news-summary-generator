@@ -66,6 +66,11 @@ export interface InteractiveMessageResponseBody {
   };
 }
 
+export enum INTERACTIVE_EVENT_VALUE {
+  YES = 'yes',
+  NO = 'no'
+}
+
 export interface VerificationResponseBody {
   event_id: string;
   event_type: SEATALK_EVENT.VERIFICATION;

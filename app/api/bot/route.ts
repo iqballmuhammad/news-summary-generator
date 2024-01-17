@@ -3,7 +3,8 @@ import {
   SEATALK_EVENT,
   RESPONSE_TYPE,
   GetAccessTokenResponseBody,
-  SEATALK_API
+  SEATALK_API,
+  INTERACTIVE_EVENT_VALUE
 } from '@/lib/types';
 import { NextResponse } from 'next/server';
 import { pun } from './pun';
@@ -12,18 +13,21 @@ export async function POST(req: Request) {
   const res = (await req.json()) as RESPONSE_TYPE;
   const { event_type, event } = res;
   const appToken = await getAppAccessToken();
-  console.log(appToken);
   if (event_type) {
     switch (event_type) {
       case SEATALK_EVENT.INTERACTIVE_MESSAGE_CLICK:
-        await sendRandomPun(pun.items, event.employee_code, appToken);
-        console.log('done send pun');
+        if(event.value === INTERACTIVE_EVENT_VALUE.NO){
+            const punMessage = pun.items[Math.floor(Math.random() * pun.items.length)];
+            await sendMessage(punMessage, event.employee_code, appToken);
+            await sendMessageCard(event.employee_code, appToken);
+            return NextResponse.json({ data: 'success' });
+        }
+        await sendMessage('Have a good day!', event.employee_code, appToken);
         return NextResponse.json({ data: 'success' });
 
+       
       case SEATALK_EVENT.MESSAGE_RECEIVED:
-        console.log(event.message, event.employee_code);
         await sendMessageCard(event.employee_code, appToken);
-        console.log('done send message');
         return NextResponse.json({ data: 'success' });
 
       case SEATALK_EVENT.VERIFICATION:
@@ -39,7 +43,6 @@ export async function POST(req: Request) {
 }
 
 async function sendMessageCard(employeeCode: string, appToken: string) {
-  console.log('posting message');
   const res = await fetch(SEATALK_API.SEND_SINGLE_CHAT, {
     method: 'POST',
     headers: {
@@ -69,7 +72,7 @@ async function sendMessageCard(employeeCode: string, appToken: string) {
               button: {
                 button_type: 'callback',
                 text: 'Not yet',
-                value: 'test'
+                value: 'no'
               }
             },
             {
@@ -77,7 +80,7 @@ async function sendMessageCard(employeeCode: string, appToken: string) {
               button: {
                 button_type: 'callback',
                 text: 'Yes',
-                value: 'test'
+                value: 'yes'
               }
             }
           ]
@@ -89,10 +92,7 @@ async function sendMessageCard(employeeCode: string, appToken: string) {
   console.log(data);
 }
 
-async function sendRandomPun(punList: string[], employeeCode: string, appToken: string) {
-  console.log('posting pun');
-  const pun = punList[Math.floor(Math.random() * punList.length)];
-  console.log(pun);
+async function sendMessage(message: string, employeeCode: string, appToken: string) {
   const res = await fetch(SEATALK_API.SEND_SINGLE_CHAT, {
     method: 'POST',
     headers: {
@@ -105,7 +105,7 @@ async function sendRandomPun(punList: string[], employeeCode: string, appToken: 
         tag: 'text',
         text: {
           format: 1,
-          content: pun
+          content: message
         }
       }
     })
