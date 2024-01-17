@@ -21,7 +21,7 @@ export async function POST(req: Request) {
         return NextResponse.json({ data: 'success' });
 
       case SEATALK_EVENT.MESSAGE_RECEIVED:
-        console.log(event.message);
+        console.log(event.message, event.employee_code);
         await sendMessageCard(event.employee_code, appToken);
         console.log('done send message');
         return NextResponse.json({ data: 'success' });
@@ -40,7 +40,7 @@ export async function POST(req: Request) {
 
 async function sendMessageCard(employeeCode: string, appToken: string) {
   console.log('posting message');
-  await fetch(SEATALK_API.SEND_SINGLE_CHAT, {
+  const res = await fetch(SEATALK_API.SEND_SINGLE_CHAT, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${appToken}`,
@@ -85,12 +85,13 @@ async function sendMessageCard(employeeCode: string, appToken: string) {
       }
     })
   });
+  console.log(res.json());
 }
 
 async function sendRandomPunImage(employeeCode: string, appToken: string) {
   console.log('posting image');
   const image = getImage();
-  await fetch(SEATALK_API.SEND_SERVICE_NOTICE, {
+  const res = await fetch(SEATALK_API.SEND_SERVICE_NOTICE, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${appToken}`,
@@ -106,6 +107,7 @@ async function sendRandomPunImage(employeeCode: string, appToken: string) {
       }
     })
   });
+  console.log(res.json());
 }
 
 async function getAppAccessToken() {
