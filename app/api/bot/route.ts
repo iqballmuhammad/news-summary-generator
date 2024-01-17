@@ -132,7 +132,7 @@ async function getAppAccessToken() {
 }
 
 function getImage() {
-  const dir = './images';
+  const dir = `${__dirname}/images`;
   let imagePath = '';
   fs.readdir(dir, (err, files) => {
     console.log(files);
