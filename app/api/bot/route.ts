@@ -85,7 +85,8 @@ async function sendMessageCard(employeeCode: string, appToken: string) {
       }
     })
   });
-  console.log(res.json());
+  const data = await res.json();
+  console.log(data);
 }
 
 async function sendRandomPunImage(employeeCode: string, appToken: string) {
@@ -107,7 +108,8 @@ async function sendRandomPunImage(employeeCode: string, appToken: string) {
       }
     })
   });
-  console.log(res.json());
+  const data = await res.json();
+  console.log(data);
 }
 
 async function getAppAccessToken() {
