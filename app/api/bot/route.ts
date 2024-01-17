@@ -92,6 +92,7 @@ async function sendMessageCard(employeeCode: string, appToken: string) {
 async function sendRandomPunImage(employeeCode: string, appToken: string) {
   console.log('posting image');
   const image = getImage();
+  console.log(image);
   const res = await fetch(SEATALK_API.SEND_SINGLE_CHAT, {
     method: 'POST',
     headers: {
@@ -139,6 +140,7 @@ function getImage() {
       imagePath = files[Math.floor(Math.random() * files.length)];
     }
   });
+  console.log(imagePath);
   const base64String = Buffer.from(imagePath).toString('base64');
   return 'data:image/png;base64,' + base64String;
 }
