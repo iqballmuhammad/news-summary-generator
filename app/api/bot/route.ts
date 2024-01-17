@@ -92,7 +92,7 @@ async function sendMessageCard(employeeCode: string, appToken: string) {
 async function sendRandomPunImage(employeeCode: string, appToken: string) {
   console.log('posting image');
   const image = getImage();
-  const res = await fetch(SEATALK_API.SEND_SERVICE_NOTICE, {
+  const res = await fetch(SEATALK_API.SEND_SINGLE_CHAT, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${appToken}`,
