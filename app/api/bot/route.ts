@@ -19,7 +19,7 @@ export async function POST(req: Request) {
         if (event.value === INTERACTIVE_EVENT_VALUE.NO) {
           const punMessage =
             pun.items[Math.floor(Math.random() * pun.items.length)];
-          await sendMessage(punMessage, event.employee_code, appToken);
+          await sendMessage(`Here is a pun for you: <br /> **${punMessage}**`, event.employee_code, appToken);
           sleep(1000);
           await sendMessageCard(event.employee_code, appToken);
           return NextResponse.json({ data: 'success' });
