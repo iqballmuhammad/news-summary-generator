@@ -134,10 +134,12 @@ async function getAppAccessToken() {
 function getImage() {
   const dir = './images';
   let imagePath = '';
-  fs.readdir(dir, (_, files) => {
+  fs.readdir(dir, (err, files) => {
     console.log(files);
-    if (files) {
-      console.log(files);
+    if (err) {
+      console.log('error:', err);
+    } else {
+      console.log('files:', files);
       imagePath = files[Math.floor(Math.random() * files.length)];
     }
   });
