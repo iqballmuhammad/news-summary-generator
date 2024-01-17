@@ -22,11 +22,12 @@ export async function POST(req: Request) {
           await sendMessage(punMessage, event.employee_code, appToken);
           setTimeout(async () => {
             await sendMessageCard(event.employee_code, appToken);
-            return NextResponse.json({ data: 'success' });
           }, 1000);
+          return NextResponse.json({ data: 'success' });
+        } else {
+          await sendMessage('Have a good day!', event.employee_code, appToken);
+          return NextResponse.json({ data: 'success' });
         }
-        await sendMessage('Have a good day!', event.employee_code, appToken);
-        return NextResponse.json({ data: 'success' });
 
       case SEATALK_EVENT.MESSAGE_RECEIVED:
         await sendMessageCard(event.employee_code, appToken);
