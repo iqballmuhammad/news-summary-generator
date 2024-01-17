@@ -47,7 +47,7 @@ async function sendMessageCard(employeeCode: string, appToken: string) {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      employee_code: employeeCode,
+      employee_code: employeeCode.toString(),
       message: {
         tag: 'interactive_message',
         interactive_message: {
@@ -76,7 +76,7 @@ async function sendMessageCard(employeeCode: string, appToken: string) {
               element_type: 'button',
               button: {
                 button_type: 'callback',
-                text: 'Yes, but try to make me laugh anyway',
+                text: 'Yes',
                 value: 'test'
               }
             }
