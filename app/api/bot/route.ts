@@ -20,7 +20,7 @@ export async function POST(req: Request) {
           const punMessage =
             pun.items[Math.floor(Math.random() * pun.items.length)];
           await sendMessage(`Here is a pun for you: <br /> **${punMessage}**`, event.employee_code, appToken);
-          sleep(1000);
+          await sleep(1000);
           await sendMessageCard(event.employee_code, appToken);
           return NextResponse.json({ data: 'success' });
         } else {
