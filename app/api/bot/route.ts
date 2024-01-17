@@ -16,16 +16,18 @@ export async function POST(req: Request) {
   if (event_type) {
     switch (event_type) {
       case SEATALK_EVENT.INTERACTIVE_MESSAGE_CLICK:
-        if(event.value === INTERACTIVE_EVENT_VALUE.NO){
-            const punMessage = pun.items[Math.floor(Math.random() * pun.items.length)];
-            await sendMessage(punMessage, event.employee_code, appToken);
+        if (event.value === INTERACTIVE_EVENT_VALUE.NO) {
+          const punMessage =
+            pun.items[Math.floor(Math.random() * pun.items.length)];
+          await sendMessage(punMessage, event.employee_code, appToken);
+          setTimeout(async () => {
             await sendMessageCard(event.employee_code, appToken);
             return NextResponse.json({ data: 'success' });
+          }, 1000);
         }
         await sendMessage('Have a good day!', event.employee_code, appToken);
         return NextResponse.json({ data: 'success' });
 
-       
       case SEATALK_EVENT.MESSAGE_RECEIVED:
         await sendMessageCard(event.employee_code, appToken);
         return NextResponse.json({ data: 'success' });
@@ -92,7 +94,11 @@ async function sendMessageCard(employeeCode: string, appToken: string) {
   console.log(data);
 }
 
-async function sendMessage(message: string, employeeCode: string, appToken: string) {
+async function sendMessage(
+  message: string,
+  employeeCode: string,
+  appToken: string
+) {
   const res = await fetch(SEATALK_API.SEND_SINGLE_CHAT, {
     method: 'POST',
     headers: {
