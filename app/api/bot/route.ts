@@ -1,5 +1,4 @@
 import { SEATALK_APP_ID, SEATALK_APP_SECRET } from '@/lib/constant';
-import { getImage } from '@/lib/getImage';
 import {
   SEATALK_EVENT,
   RESPONSE_TYPE,
@@ -7,6 +6,7 @@ import {
   SEATALK_API
 } from '@/lib/types';
 import { NextResponse } from 'next/server';
+import fs from 'fs';
 
 export async function POST(req: Request) {
   const res = (await req.json()) as RESPONSE_TYPE;
@@ -128,4 +128,17 @@ async function getAppAccessToken() {
   });
   const { app_access_token } = (await res.json()) as GetAccessTokenResponseBody;
   return app_access_token || '';
+}
+
+export function getImage() {
+  const dir = './images/';
+  let imagePath = '';
+  fs.readdir(dir, (_, files) => {
+    if (files) {
+      console.log(files);
+      imagePath = files[Math.floor(Math.random() * files.length)];
+    }
+  });
+  const base64String = Buffer.from(imagePath).toString('base64');
+  return 'data:image/png;base64,' + base64String;
 }
