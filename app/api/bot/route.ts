@@ -130,7 +130,7 @@ async function getAppAccessToken() {
   return app_access_token || '';
 }
 
-export function getImage() {
+function getImage() {
   const dir = './images/';
   let imagePath = '';
   fs.readdir(dir, (_, files) => {
