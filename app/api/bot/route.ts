@@ -6,7 +6,7 @@ import {
   SEATALK_API
 } from '@/lib/types';
 import { NextResponse } from 'next/server';
-import fs from 'fs';
+import { pun } from './pun';
 
 export async function POST(req: Request) {
   const res = (await req.json()) as RESPONSE_TYPE;
@@ -16,8 +16,8 @@ export async function POST(req: Request) {
   if (event_type) {
     switch (event_type) {
       case SEATALK_EVENT.INTERACTIVE_MESSAGE_CLICK:
-        await sendRandomPunImage(event.employee_code, appToken);
-        console.log('done send image');
+        await sendRandomPun(pun.items, event.employee_code, appToken);
+        console.log('done send pun');
         return NextResponse.json({ data: 'success' });
 
       case SEATALK_EVENT.MESSAGE_RECEIVED:
@@ -89,10 +89,10 @@ async function sendMessageCard(employeeCode: string, appToken: string) {
   console.log(data);
 }
 
-async function sendRandomPunImage(employeeCode: string, appToken: string) {
-  console.log('posting image');
-  const image = getImage();
-  console.log(image);
+async function sendRandomPun(punList: string[], employeeCode: string, appToken: string) {
+  console.log('posting pun');
+  const pun = punList[Math.floor(Math.random() * punList.length)];
+  console.log(pun);
   const res = await fetch(SEATALK_API.SEND_SINGLE_CHAT, {
     method: 'POST',
     headers: {
@@ -102,9 +102,10 @@ async function sendRandomPunImage(employeeCode: string, appToken: string) {
     body: JSON.stringify({
       employee_code: employeeCode,
       message: {
-        tag: 'image',
-        image: {
-          content: image
+        tag: 'text',
+        text: {
+          format: 1,
+          content: pun
         }
       }
     })
@@ -129,21 +130,4 @@ async function getAppAccessToken() {
   });
   const { app_access_token } = (await res.json()) as GetAccessTokenResponseBody;
   return app_access_token || '';
-}
-
-function getImage() {
-  const dir = `${__dirname}/images`;
-  let imagePath = '';
-  fs.readdir(dir, (err, files) => {
-    console.log(files);
-    if (err) {
-      console.log('error:', err);
-    } else {
-      console.log('files:', files);
-      imagePath = files[Math.floor(Math.random() * files.length)];
-    }
-  });
-  console.log(imagePath);
-  const base64String = Buffer.from(imagePath).toString('base64');
-  return 'data:image/png;base64,' + base64String;
 }
