@@ -20,9 +20,8 @@ export async function POST(req: Request) {
           const punMessage =
             pun.items[Math.floor(Math.random() * pun.items.length)];
           await sendMessage(punMessage, event.employee_code, appToken);
-          setTimeout(async () => {
-            await sendMessageCard(event.employee_code, appToken);
-          }, 1000);
+          sleep(1000);
+          await sendMessageCard(event.employee_code, appToken);
           return NextResponse.json({ data: 'success' });
         } else {
           await sendMessage('Have a good day!', event.employee_code, appToken);
@@ -137,4 +136,8 @@ async function getAppAccessToken() {
   });
   const { app_access_token } = (await res.json()) as GetAccessTokenResponseBody;
   return app_access_token || '';
+}
+
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
